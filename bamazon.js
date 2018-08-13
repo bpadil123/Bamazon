@@ -19,6 +19,8 @@ connection.connect(function (err) {
 
 
   showProducts();
+  promptSale();
+
 });
 
 function showProducts() {
@@ -36,11 +38,11 @@ function showProducts() {
     console.log(" ");
   })
 }
-
+function promptSale(){
 inquirer.prompt([{
     type: "input",
     name: "selection",
-    message:"What would you like to purchase? Please input the ID that is to the left of the item you would like?    ",
+    message:"What would you like to purchase? Please input the ID that is to the left of the item you would like....    ",
   },
   {
     type: "input",
@@ -56,14 +58,16 @@ inquirer.prompt([{
     if (err) console.log(err);
 
     if (quantSelect > currentStock) {
-      console.log("We appologize, we do not have enough stock in our inventory, please see the inventory qty and try again.")
-
+      console.log("We appologize, we do not have enough stock in our inventory, please modify your order based on availability.")
+showProducts();
+promptSale();
 
     } else {
       currentStock -= quantSelect
 
       connection.query('UPDATE products SET stock_quantity =' + currentStock + ' WHERE id =' + idSelect, function (err) {
         if (err) throw err;
+        console.log("Your purchase total is $"+ quantSelect * res[0].price+"!")
 
         console.log("Great Choice! We will see you soon!")
       })
@@ -72,3 +76,4 @@ inquirer.prompt([{
 
 
 })
+}
